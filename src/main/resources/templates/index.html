@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bernard's Elastic Beanstalk App</title>
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"></noscript>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: white;
+            line-height: 1.6;
+        }
+
+        .container {
+            text-align: center;
+            padding: 3rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            max-width: 900px;
+            width: 90%;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .container::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #61dafb, #83eaff);
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            color: #61dafb;
+            text-shadow: 0 0 10px rgba(97, 218, 251, 0.3);
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        p {
+            font-size: 1.6rem;
+            margin-bottom: 2rem;
+            line-height: 1.7;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .aws-logo {
+            width: 200px;
+            margin-bottom: 2.5rem;
+        }
+
+        .highlight {
+            color: #61dafb;
+            font-weight: bold;
+            position: relative;
+            display: inline-block;
+        }
+
+        .highlight::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 2px;
+            width: 100%;
+            height: 3px;
+            background-color: #61dafb;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .highlight:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            width: 190px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+        }
+
+        .card i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #61dafb;
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card p {
+            font-size: 0.9rem;
+            margin-bottom: 0;
+        }
+
+        .footer {
+            margin-top: 3rem;
+            font-size: 1rem;
+            opacity: 0.8;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1.5rem;
+        }
+
+        .floating {
+            animation: floating 6s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+
+        .footer p {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            animation: floatParticle 15s linear infinite;
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-30vh) translateX(10vw);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            p {
+                font-size: 1.2rem;
+            }
+
+            .card-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .card {
+                width: 100%;
+                max-width: 280px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="particles" id="particles"></div>
+<div class="container">
+    <img src="https://foghornconsult.wpengine.com/wp-content/uploads/2016/08/elastic_beanstalk.png" alt="AWS Elastic Beanstalk Logo" class="aws-logo floating">
+    <h1>Hello from AWS Elastic Beanstalk!</h1>
+    <p>My name is <span class="highlight">Bernard Essilfie</span> and this is my first Elastic Beanstalk deployment.</p>
+    <p>This application demonstrates cloud deployment using AWS's powerful platform for applications.</p>
+
+    <div class="card-container">
+        <div class="card">
+            <i class="fas fa-cloud"></i>
+            <h3>Cloud Hosting</h3>
+            <p>Scalable and reliable cloud infrastructure</p>
+        </div>
+        <div class="card">
+            <i class="fas fa-server"></i>
+            <h3>Auto Scaling</h3>
+            <p>Automatically adapts to traffic demands</p>
+        </div>
+        <div class="card">
+            <i class="fas fa-code"></i>
+            <h3>Easy Deployment</h3>
+            <p>Simple push-to-deploy workflow</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Created for AWS Deployment Lab - February 2025</p>
+        <p>Built with <i class="fas fa-heart" style="color: #ff6b6b;"></i> by Bernard Essilfie</p>
+    </div>
+</div>
+
+<script>
+
+    function createParticles() {
+        const particlesContainer = document.getElementById('particles');
+        const particleCount = 15;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+
+            // Random positioning
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.top = Math.random() * 100 + 'vh';
+
+            // Add slight variation to animation
+            particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+            particle.style.animationDelay = (Math.random() * 5) + 's';
+
+            particlesContainer.appendChild(particle);
+        }
+    }
+
+    // Run particle creation after page loads
+    window.addEventListener('DOMContentLoaded', createParticles);
+</script>
+</body>
+</html>
