@@ -31,8 +31,17 @@ jobs:
       - name: Build with Maven
         run: mvn clean package -DskipTests
 
+      - name: List files in target directory
+        run: ls -al target/
+
       - name: Zip the JAR file
-        run: zip target/HelloElasticBeanstalk-0.0.1-SNAPSHOT.jar target/HelloElasticBeanstalk.zip
+        run: |
+          if [ -f target/HelloElasticBeanstalk-0.0.1-SNAPSHOT.jar ]; then
+            zip target/HelloElasticBeanstalk.zip target/HelloElasticBeanstalk-0.0.1-SNAPSHOT.jar
+          else
+            echo "JAR file not found!"
+            exit 1
+          fi
 
       - name: Upload to S3
         uses: jakejarvis/s3-sync-action@v0.5.1
