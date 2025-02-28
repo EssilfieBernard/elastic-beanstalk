@@ -1,54 +1,37 @@
-name: Build and Deploy to S3 Bucket
+name: Deploy to S3
 
 on:
   push:
     branches:
-      - main
+      - main  # Runs when code is pushed to the main branch
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up JDK 17 (Temurin)
+      - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
-          java-version: '17'
           distribution: 'temurin'
-          cache: 'maven'
+          java-version: '21'
 
-      - name: Cache Maven dependencies
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-
-      - name: Build with Maven
-        run: mvn clean package -DskipTests
-
-      - name: List files in target directory
-        run: ls -al target/
-
-      - name: Zip the JAR file
+      - name: Build the application
         run: |
-          if [ -f target/HelloElasticBeanstalk-0.0.1-SNAPSHOT.jar ]; then
-            zip target/HelloElasticBeanstalk.zip target/HelloElasticBeanstalk-0.0.1-SNAPSHOT.jar
-          else
-            echo "JAR file not found!"
-            exit 1
-          fi
+          mvn clean package
 
-      - name: Upload to S3
-        uses: jakejarvis/s3-sync-action@v0.5.1
+      - name: Zip the application
+        run: zip -r app.zip target/*.jar
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
         with:
-          args: |
-            --exact-timestamps
-            s3://${{ secrets.AWS_S3_BUCKET }}/
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Upload the zip file to S3
+        run: aws s3 cp app.zip s3://${{ secrets.AWS_S3_BUCKET }}/
